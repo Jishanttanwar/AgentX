@@ -53,6 +53,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - Health Check: `http://localhost:8000/api/v1/health`
 - Plan Generation: `POST http://localhost:8000/api/v1/research/plan`
 - Research Execution: `POST http://localhost:8000/api/v1/research/execute`
+- Workflow Start: `POST http://localhost:8000/api/v1/research/workflow/start`
+- Workflow State: `GET http://localhost:8000/api/v1/research/workflow/{research_id}/state`
 - Swagger Docs: `http://localhost:8000/api/v1/docs`
 
 ---
@@ -62,7 +64,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - [x] **Phase 1: Foundation (FastAPI, Logging, Configuration, Health Probe)**
 - [x] **Phase 2: First AI Agent (Planner Agent & Structured Pydantic Output)**
 - [x] **Phase 3: First Multi-Agent Collaboration (Researcher + Tavily + Parallel Execution)**
-- [ ] Phase 4: LangGraph Stateful Workflow & Checkpointing
+- [x] **Phase 4: LangGraph Stateful Workflow & Checkpointing (StateGraph, Send API, Reducers)**
 - [ ] Phase 5: Research Intelligence (Analyst & Fact Checker)
 - [ ] Phase 6: Report Generation (Writer & Reviewer QA Loop)
 - [ ] Phase 7: Persistent Memory (PostgreSQL & ChromaDB)

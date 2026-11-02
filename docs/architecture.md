@@ -63,12 +63,47 @@ flowchart TD
 
 ---
 
-## 3. Shared State Management
+## 3. LangGraph Stateful Workflow Architecture (Phase 4)
 
-LangGraph maintains an immutable, traceable `AgentState`:
-- **State Schema**: Centralized Pydantic-backed TypedDict.
-- **Reducers**: Append-only accumulators for logs, research sources, findings, and verification matrices to prevent race conditions during parallel Researcher executions.
-- **Execution Limits**: Guarded with maximum search quotas, maximum LLM invocations, and revision cycle caps.
+AgentX orchestrates its multi-agent intelligence through a stateful **LangGraph** machine:
+
+```mermaid
+stateDiagram-v2
+    [*] --> OrchestratorInit: User Query
+    OrchestratorInit --> Planner: Validate & Log
+    Planner --> HumanApprovalCheck: Formulate Subtasks
+    
+    HumanApprovalCheck --> AwaitingApproval: approval_required == True
+    HumanApprovalCheck --> FanOutDispatch: approval_required == False
+    
+    AwaitingApproval --> FanOutDispatch: User Approves (aupdate_state)
+    
+    state FanOutDispatch {
+        [*] --> ResearcherWorker1
+        [*] --> ResearcherWorker2
+        [*] --> ResearcherWorkerN
+        ResearcherWorker1 --> JoinAggregator
+        ResearcherWorker2 --> JoinAggregator
+        ResearcherWorkerN --> JoinAggregator
+    }
+    
+    FanOutDispatch --> ResearchAggregator: Concurrency Join
+    ResearchAggregator --> [*]: Research Phase Completed (Phase 4)
+```
+
+### State Reducers for Concurrent Parallelism
+Because Researcher agents execute in parallel via LangGraph's dynamic `Send` primitive, `AgentState` enforces thread-safe reducers:
+- **`collected_sources` (`reduce_sources`)**: Deduplicates incoming sources across parallel workers by canonical URL and merges enriched text snippets.
+- **`research_findings` (`reduce_findings`)**: Accumulates unique atomic findings without duplication.
+- **`execution_logs` (`reduce_logs`)**: Appends structured audit events in chronological order.
+- **`token_usage` (`reduce_token_usage`)**: Sums token consumption across model calls.
+
+### Human-in-the-Loop Resumption
+When `human_approval_required` is enabled:
+1. The graph compiles with an in-memory checkpointer (`MemorySaver`).
+2. After the Planner node completes, the graph halts at `WorkflowStatus.AWAITING_APPROVAL`.
+3. The user or frontend inspects the plan via `GET /api/v1/research/workflow/{research_id}/state`.
+4. Calling `POST /api/v1/research/workflow/{research_id}/approve` triggers `aupdate_state(thread_id, {"human_approved": True})` and resumes the graph from the exact saved checkpoint.
 
 ---
 

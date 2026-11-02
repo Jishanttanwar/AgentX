@@ -65,6 +65,27 @@ Orchestrates Planner and concurrent Researcher agents to collect sources, dedupl
   ```
 - **Response**: `200 OK` (Returns `ResearchExecutionResponse` with `MultiAgentResearchResult`)
 
+### `POST /api/v1/research/workflow/start`
+Starts a stateful LangGraph workflow with short-term checkpointer persistence.
+- **Request Body**:
+  ```json
+  {
+    "query": "Research the future of artificial intelligence in healthcare.",
+    "depth": "standard",
+    "human_approval_required": true
+  }
+  ```
+- **Response**: `200 OK` (Returns `WorkflowActionResponse`)
+
+### `GET /api/v1/research/workflow/{research_id}/summary`
+Retrieves live progress metrics (total tasks, completed tasks, source counts, findings counts).
+
+### `GET /api/v1/research/workflow/{research_id}/state`
+Retrieves the full raw checkpointed state of the multi-agent graph.
+
+### `POST /api/v1/research/workflow/{research_id}/approve`
+Approves a pending research plan and resumes the paused LangGraph workflow from the exact checkpoint.
+
 ---
 
 ## 3. Full Research Lifecycle Roadmap (Upcoming Phases)

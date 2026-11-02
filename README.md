@@ -58,7 +58,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ## Roadmap
 
 - [x] **Phase 1: Foundation (FastAPI, Logging, Configuration, Health Probe)**
-- [ ] Phase 2: First AI Agent (Planner Agent & Structured Pydantic Output)
+- [x] **Phase 2: First AI Agent (Planner Agent & Structured Pydantic Output)**
 - [ ] Phase 3: First Multi-Agent Collaboration (Researcher + Tavily)
 - [ ] Phase 4: LangGraph Stateful Workflow & Checkpointing
 - [ ] Phase 5: Research Intelligence (Analyst & Fact Checker)

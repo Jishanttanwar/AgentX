@@ -40,7 +40,34 @@ Health check probe for uptime and subsystem status.
 
 ---
 
-## 2. Research Lifecycle Endpoints (Upcoming Phases)
+## 2. Research Lifecycle Endpoints
+
+### `POST /api/v1/research/plan`
+Invokes the Planner Agent to generate a validated structured research plan.
+- **Request Body**:
+  ```json
+  {
+    "query": "Research the future of artificial intelligence in healthcare.",
+    "depth": "standard",
+    "additional_context": "Focus on diagnostic imaging and clinical deployment."
+  }
+  ```
+- **Response**: `200 OK` (Returns `PlanGenerationResponse`)
+
+### `POST /api/v1/research/execute`
+Orchestrates Planner and concurrent Researcher agents to collect sources, deduplicate URLs, and extract verifiable findings.
+- **Request Body**:
+  ```json
+  {
+    "query": "Research the future of artificial intelligence in healthcare.",
+    "depth": "standard"
+  }
+  ```
+- **Response**: `200 OK` (Returns `ResearchExecutionResponse` with `MultiAgentResearchResult`)
+
+---
+
+## 3. Full Research Lifecycle Roadmap (Upcoming Phases)
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |

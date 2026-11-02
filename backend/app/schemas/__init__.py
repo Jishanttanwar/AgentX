@@ -2,6 +2,11 @@
 Pydantic schemas package for AgentX.
 """
 
+from app.schemas.events import (
+    ExecutionLogEvent,
+    WorkflowStateSummary,
+    WorkflowStatus,
+)
 from app.schemas.health import HealthResponse, ServiceStatus
 from app.schemas.plan import (
     AgentType,
@@ -37,4 +42,7 @@ __all__ = [
     "ResearcherTaskInput",
     "ResearcherTaskOutput",
     "MultiAgentResearchResult",
+    "WorkflowStatus",
+    "ExecutionLogEvent",
+    "WorkflowStateSummary",
 ]

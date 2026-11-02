@@ -207,3 +207,4 @@ class ResearcherAgent:
 
 # Global researcher agent instance
 researcher_agent = ResearcherAgent()
+

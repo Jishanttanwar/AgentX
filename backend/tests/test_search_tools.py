@@ -139,3 +139,4 @@ def test_web_content_extractor_clean_html():
     assert "Copyright" not in cleaned
     assert "Medical AI Advancements" in cleaned
     assert "94% diagnostic accuracy" in cleaned
+

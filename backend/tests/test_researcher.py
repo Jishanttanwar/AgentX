@@ -263,3 +263,4 @@ async def test_api_execute_endpoint_validation_error(async_client: AsyncClient):
     """Integration test: invalid payload raises 422 error."""
     response = await async_client.post("/api/v1/research/execute", json={"query": ""})
     assert response.status_code == 422
+

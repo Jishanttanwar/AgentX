@@ -126,3 +126,4 @@ class WebContentExtractor:
 
 # Global extractor tool instance
 web_content_extractor = WebContentExtractor()
+

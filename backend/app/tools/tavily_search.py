@@ -114,3 +114,4 @@ class TavilySearchTool:
 
 # Global tool instance
 tavily_search_tool = TavilySearchTool()
+

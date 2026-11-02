@@ -113,3 +113,4 @@ class MultiAgentResearchResult(BaseModel):
     all_findings: List[ResearchFinding] = Field(default_factory=list)
     findings_by_task: Dict[str, List[ResearchFinding]] = Field(default_factory=dict)
     total_execution_time_ms: float = 0.0
+

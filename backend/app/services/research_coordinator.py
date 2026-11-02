@@ -130,3 +130,4 @@ class ResearchCoordinator:
 
 # Global coordinator instance
 research_coordinator = ResearchCoordinator()
+

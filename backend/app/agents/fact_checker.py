@@ -272,3 +272,4 @@ class FactCheckerResult(BaseModel):
 
 # Global fact checker agent instance
 fact_checker_agent = FactCheckerAgent()
+

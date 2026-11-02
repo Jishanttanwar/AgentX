@@ -138,3 +138,4 @@ class AnalystAgent:
 
 # Global analyst agent instance
 analyst_agent = AnalystAgent()
+

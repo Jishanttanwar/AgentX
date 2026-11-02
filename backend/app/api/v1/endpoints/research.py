@@ -3,7 +3,7 @@ Research API endpoints for planning, execution, and stateful LangGraph workflow 
 """
 
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
@@ -11,6 +11,12 @@ from app.agents.planner import planner_agent
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.schemas.events import WorkflowStateSummary, WorkflowStatus
+from app.schemas.intelligence import (
+    AdditionalResearchRequest,
+    AnalyticalInsight,
+    VerificationResult,
+    VerificationSummary,
+)
 from app.schemas.plan import (
     PlanGenerationRequest,
     PlanGenerationResponse,
@@ -82,6 +88,18 @@ class WorkflowActionResponse(BaseModel):
     research_id: str
     status: WorkflowStatus
     message: str
+
+
+class IntelligenceSummaryResponse(BaseModel):
+    """Intelligence phase output: analytical insights and fact verification results."""
+
+    research_id: str
+    insights: List[AnalyticalInsight] = Field(default_factory=list)
+    insights_count: int = 0
+    verification_results: List[VerificationResult] = Field(default_factory=list)
+    verification_summary: Optional[VerificationSummary] = None
+    additional_requests: List[AdditionalResearchRequest] = Field(default_factory=list)
+    research_cycle_count: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -274,3 +292,58 @@ async def approve_research_workflow(research_id: str) -> WorkflowActionResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Approval error: {str(e)}",
         )
+
+
+@router.get(
+    "/workflow/{research_id}/intelligence",
+    response_model=IntelligenceSummaryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get Intelligence Phase Results",
+    description=(
+        "Returns the Analyst's synthesized insights and the Fact Checker's verification "
+        "results for a completed or in-progress intelligence phase."
+    ),
+)
+async def get_intelligence_summary(research_id: str) -> IntelligenceSummaryResponse:
+    """Retrieve analytical insights and fact verification results for a workflow."""
+    state = await workflow_service.get_state(research_id)
+    if not state:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Research workflow session '{research_id}' not found.",
+        )
+
+    insights = state.get("analytical_insights", [])
+    verification_results = state.get("verification_results", [])
+    additional_requests = state.get("additional_research_requests", [])
+    research_cycle_count = state.get("research_cycle_count", 0)
+
+    # Build verification summary if results exist
+    verification_summary: Optional[VerificationSummary] = None
+    if verification_results:
+        from app.schemas.intelligence import VerificationStatus
+        verified = sum(1 for v in verification_results if v.status == VerificationStatus.VERIFIED)
+        partial = sum(1 for v in verification_results if v.status == VerificationStatus.PARTIALLY_SUPPORTED)
+        conflict = sum(1 for v in verification_results if v.status == VerificationStatus.CONFLICTING_EVIDENCE)
+        unsupported = sum(1 for v in verification_results if v.status == VerificationStatus.UNSUPPORTED)
+        total = len(verification_results)
+        verification_summary = VerificationSummary(
+            total_claims_checked=total,
+            verified_count=verified,
+            partially_supported_count=partial,
+            conflicting_count=conflict,
+            unsupported_count=unsupported,
+            verification_rate=round((verified + partial) / total, 3) if total > 0 else 0.0,
+            needs_additional_research=len(additional_requests) > 0,
+            additional_requests=additional_requests,
+        )
+
+    return IntelligenceSummaryResponse(
+        research_id=research_id,
+        insights=insights,
+        insights_count=len(insights),
+        verification_results=verification_results,
+        verification_summary=verification_summary,
+        additional_requests=additional_requests,
+        research_cycle_count=research_cycle_count,
+    )

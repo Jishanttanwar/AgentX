@@ -3,7 +3,7 @@ State Reducers for LangGraph.
 Ensures thread-safe, concurrent state updates during parallel agent fan-out and joins.
 """
 
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 from app.schemas.events import ExecutionLogEvent
 from app.schemas.research import ResearchFinding, SourceMetadata
 

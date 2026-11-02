@@ -7,13 +7,23 @@ from typing import Annotated, Any, Dict, List, Optional, TypedDict
 import uuid
 
 from app.graph.reducers import (
+    reduce_additional_requests,
+    reduce_claims,
     reduce_findings,
     reduce_findings_by_task,
+    reduce_insights,
     reduce_logs,
     reduce_sources,
     reduce_token_usage,
+    reduce_verification_results,
 )
 from app.schemas.events import ExecutionLogEvent, WorkflowStatus
+from app.schemas.intelligence import (
+    AdditionalResearchRequest,
+    AnalyticalInsight,
+    FactualClaim,
+    VerificationResult,
+)
 from app.schemas.plan import ResearchDepth, ResearchPlan, ResearchTask
 from app.schemas.research import ResearchFinding, SearchResult, SourceMetadata
 
@@ -44,12 +54,13 @@ class AgentState(TypedDict, total=False):
     research_findings: Annotated[List[ResearchFinding], reduce_findings]
     findings_by_task: Annotated[Dict[str, List[ResearchFinding]], reduce_findings_by_task]
     search_queries_executed: Annotated[List[str], lambda x, y: list(set((x or []) + (y or [])))]
+    research_cycle_count: int
 
-    # Analysis & Verification State (Phases 5)
-    analytical_insights: List[Dict[str, Any]]
-    extracted_claims: List[Dict[str, Any]]
-    verification_results: List[Dict[str, Any]]
-    additional_research_requests: List[str]
+    # Analysis & Verification State (Phase 5)
+    analytical_insights: Annotated[List[AnalyticalInsight], reduce_insights]
+    extracted_claims: Annotated[List[FactualClaim], reduce_claims]
+    verification_results: Annotated[List[VerificationResult], reduce_verification_results]
+    additional_research_requests: Annotated[List[AdditionalResearchRequest], reduce_additional_requests]
 
     # Report Synthesis & Review State (Phase 6)
     generated_report: Optional[Dict[str, Any]]
@@ -99,6 +110,7 @@ def create_initial_state(
         "research_findings": [],
         "findings_by_task": {},
         "search_queries_executed": [],
+        "research_cycle_count": 0,
         "analytical_insights": [],
         "extracted_claims": [],
         "verification_results": [],

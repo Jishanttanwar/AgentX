@@ -135,3 +135,4 @@ def test_reduce_token_usage():
     assert combined["prompt_tokens"] == 300
     assert combined["completion_tokens"] == 125
     assert combined["total_tokens"] == 425
+

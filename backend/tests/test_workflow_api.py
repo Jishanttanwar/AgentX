@@ -94,3 +94,4 @@ async def test_api_workflow_approve_success(async_client: AsyncClient):
         assert data["success"] is True
         assert data["research_id"] == "res_test_paused"
         assert data["status"] == "completed"
+

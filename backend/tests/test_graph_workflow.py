@@ -224,3 +224,4 @@ async def test_workflow_human_approval_and_resumption(mock_plan: ResearchPlan):
         assert resumed_state["execution_status"] == WorkflowStatus.COMPLETED
         assert resumed_state["human_approved"] is True
         assert len(resumed_state["research_findings"]) > 0
+

@@ -105,6 +105,15 @@ class WorkflowService:
         sources = state.get("collected_sources", [])
         findings = state.get("research_findings", [])
         tasks = state.get("research_tasks", [])
+        insights = state.get("analytical_insights", [])
+        verification_results = state.get("verification_results", [])
+
+        # Calculate verification rate
+        verified = sum(
+            1 for v in verification_results
+            if hasattr(v, "status") and v.status in ("verified", "partially_supported")
+        )
+        verification_rate = verified / len(verification_results) if verification_results else 0.0
 
         return WorkflowStateSummary(
             research_id=research_id,
@@ -115,6 +124,10 @@ class WorkflowService:
             tasks_completed=len([t for t in tasks if t.task_id in state.get("findings_by_task", {})]),
             sources_count=len(sources),
             findings_count=len(findings),
+            insights_count=len(insights),
+            claims_checked=len(verification_results),
+            verification_rate=round(verification_rate, 3),
+            research_cycle_count=state.get("research_cycle_count", 0),
             human_approval_required=state.get("human_approval_required", False),
             error_details=state.get("error_details"),
         )
@@ -122,3 +135,4 @@ class WorkflowService:
 
 # Global workflow service instance
 workflow_service = WorkflowService()
+

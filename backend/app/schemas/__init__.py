@@ -12,6 +12,14 @@ from app.schemas.plan import (
     ResearchTask,
     ResearchTaskType,
 )
+from app.schemas.research import (
+    MultiAgentResearchResult,
+    ResearcherTaskInput,
+    ResearcherTaskOutput,
+    ResearchFinding,
+    SearchResult,
+    SourceMetadata,
+)
 
 __all__ = [
     "HealthResponse",
@@ -23,4 +31,10 @@ __all__ = [
     "ResearchPlan",
     "PlanGenerationRequest",
     "PlanGenerationResponse",
+    "SourceMetadata",
+    "ResearchFinding",
+    "SearchResult",
+    "ResearcherTaskInput",
+    "ResearcherTaskOutput",
+    "MultiAgentResearchResult",
 ]

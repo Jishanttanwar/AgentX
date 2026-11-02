@@ -8,6 +8,15 @@ from app.schemas.events import (
     WorkflowStatus,
 )
 from app.schemas.health import HealthResponse, ServiceStatus
+from app.schemas.intelligence import (
+    AdditionalResearchRequest,
+    AnalyticalInsight,
+    FactualClaim,
+    InsightCategory,
+    VerificationResult,
+    VerificationStatus,
+    VerificationSummary,
+)
 from app.schemas.plan import (
     AgentType,
     PlanGenerationRequest,
@@ -45,4 +54,11 @@ __all__ = [
     "WorkflowStatus",
     "ExecutionLogEvent",
     "WorkflowStateSummary",
+    "InsightCategory",
+    "AnalyticalInsight",
+    "VerificationStatus",
+    "FactualClaim",
+    "VerificationResult",
+    "AdditionalResearchRequest",
+    "VerificationSummary",
 ]

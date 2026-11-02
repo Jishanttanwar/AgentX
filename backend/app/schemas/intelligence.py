@@ -136,3 +136,42 @@ class VerificationResult(BaseModel):
         default_factory=lambda: datetime.now(timezone.utc),
         description="Timestamp of verification assessment",
     )
+
+
+
+class AdditionalResearchRequest(BaseModel):
+    """
+    Formal request dispatched by Fact Checker / Orchestrator for iterative web retrieval.
+    """
+
+    request_id: str = Field(
+        default_factory=lambda: f"req_{uuid.uuid4().hex[:8]}",
+        description="Unique identifier for the research request",
+    )
+    target_claim_id: Optional[str] = Field(
+        default=None,
+        description="Claim ID that necessitated more research",
+    )
+    reason: str = Field(
+        ...,
+        description="Reasoning why additional sources or evidence are required",
+    )
+    queries: List[str] = Field(
+        ...,
+        min_length=1,
+        description="Targeted search queries to fill the identified information gap",
+    )
+    priority: int = Field(default=1, ge=1, le=3)
+
+
+class VerificationSummary(BaseModel):
+    """Aggregated metrics across all factual claims evaluated during research."""
+
+    total_claims_checked: int = 0
+    verified_count: int = 0
+    partially_supported_count: int = 0
+    conflicting_count: int = 0
+    unsupported_count: int = 0
+    verification_rate: float = 0.0
+    needs_additional_research: bool = False
+    additional_requests: List[AdditionalResearchRequest] = Field(default_factory=list)

@@ -55,6 +55,7 @@ class AgentState(TypedDict, total=False):
     findings_by_task: Annotated[Dict[str, List[ResearchFinding]], reduce_findings_by_task]
     search_queries_executed: Annotated[List[str], lambda x, y: list(set((x or []) + (y or [])))]
     research_cycle_count: int
+    max_research_cycles: int
 
     # Analysis & Verification State (Phase 5)
     analytical_insights: Annotated[List[AnalyticalInsight], reduce_insights]
@@ -67,6 +68,7 @@ class AgentState(TypedDict, total=False):
     reviewer_feedback: List[str]
     quality_score: Optional[float]
     revision_count: int
+    max_revision_cycles: int
 
     # Observability, Telemetry & Diagnostics
     execution_status: WorkflowStatus
@@ -82,6 +84,8 @@ def create_initial_state(
     depth: ResearchDepth = ResearchDepth.STANDARD,
     context: Optional[str] = None,
     human_approval_required: bool = False,
+    max_research_cycles: int = 2,
+    max_revision_cycles: int = 3,
 ) -> AgentState:
     """
     Create a clean, standardized initial AgentState dictionary for a new workflow.
@@ -111,6 +115,7 @@ def create_initial_state(
         "findings_by_task": {},
         "search_queries_executed": [],
         "research_cycle_count": 0,
+        "max_research_cycles": max_research_cycles,
         "analytical_insights": [],
         "extracted_claims": [],
         "verification_results": [],
@@ -119,6 +124,7 @@ def create_initial_state(
         "reviewer_feedback": [],
         "quality_score": None,
         "revision_count": 0,
+        "max_revision_cycles": max_revision_cycles,
         "execution_status": WorkflowStatus.INITIALIZING,
         "current_step": "orchestrator_init",
         "execution_logs": [init_event],

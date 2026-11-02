@@ -59,6 +59,11 @@ class WorkflowStateSummary(BaseModel):
     tasks_completed: int = 0
     sources_count: int = 0
     findings_count: int = 0
+    insights_count: int = 0
+    claims_checked: int = 0
+    verification_rate: float = 0.0
+    research_cycle_count: int = 0
     human_approval_required: bool = False
     error_details: Optional[str] = None
     execution_time_ms: float = 0.0
+

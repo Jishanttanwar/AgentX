@@ -88,3 +88,4 @@ async def researcher_worker_node(state_or_payload: Dict[str, Any]) -> Dict[str, 
         "search_queries_executed": output.queries_executed,
         "execution_logs": [log_event],
     }
+

@@ -185,3 +185,4 @@ async def test_api_generate_plan_validation_error(async_client: AsyncClient):
     """Integration test: invalid request payload triggers validation error."""
     response = await async_client.post("/api/v1/research/plan", json={"query": "ab"})
     assert response.status_code == 422
+

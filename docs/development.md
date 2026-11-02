@@ -55,3 +55,4 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - **Root Landing**: [http://localhost:8000/](http://localhost:8000/)
 - **Health Check**: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
 - **Interactive OpenAPI Docs**: [http://localhost:8000/api/v1/docs](http://localhost:8000/api/v1/docs)
+

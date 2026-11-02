@@ -29,3 +29,4 @@ async def check_health() -> HealthResponse:
             "vector_store": ServiceStatus(status="standby", details="ChromaDB ready"),
         },
     )
+

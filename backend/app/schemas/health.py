@@ -30,3 +30,4 @@ class HealthResponse(BaseModel):
         default_factory=dict,
         description="Status of connected services (db, redis, llm)",
     )
+

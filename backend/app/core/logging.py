@@ -58,3 +58,4 @@ def setup_logging() -> None:
 def get_logger(name: str) -> logging.Logger:
     """Retrieve a namespaced logger instance."""
     return logging.getLogger(f"agentx.{name}")
+

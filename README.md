@@ -67,3 +67,4 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - [ ] Phase 8: Full-Stack Frontend (React + Vite + Tailwind Dashboard)
 - [ ] Phase 9: Advanced Capabilities (Dynamic Agents, Document Intel, Debate)
 - [ ] Phase 10: Docker & Production Deployment
+

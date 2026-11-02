@@ -80,3 +80,4 @@ LangGraph maintains an immutable, traceable `AgentState`:
 2. **Long-Term Memory**:
    - **PostgreSQL**: Stores relational models (Users, Research tasks, Execution logs, Sources, Reports).
    - **ChromaDB**: Indexes report chunks and retrieved content embeddings for cross-session semantic search.
+

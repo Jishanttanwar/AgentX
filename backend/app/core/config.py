@@ -80,3 +80,4 @@ class Settings(BaseSettings):
 
 # Global cached settings instance
 settings = Settings()
+

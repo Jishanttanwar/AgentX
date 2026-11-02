@@ -55,3 +55,4 @@ Health check probe for uptime and subsystem status.
 | `POST` | `/api/v1/research/{id}/cancel` | Abort an active research execution workflow |
 | `GET` | `/api/v1/research/{id}/export/markdown` | Export report as structured Markdown |
 | `GET` | `/api/v1/research/{id}/export/pdf` | Export publication-grade PDF report |
+

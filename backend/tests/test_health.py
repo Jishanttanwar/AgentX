@@ -37,3 +37,4 @@ async def test_process_time_header(async_client: AsyncClient):
     """Verify that the middleware injects process time header."""
     response = await async_client.get("/api/v1/health")
     assert "x-process-time-ms" in response.headers
+

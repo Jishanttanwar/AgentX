@@ -30,11 +30,10 @@ async def research_aggregator_node(state: AgentState) -> Dict[str, Any]:
     if "orchestrator" not in assigned:
         assigned.append("orchestrator")
 
-    # In Phase 4, the workflow successfully completes at research aggregation.
-    # In Phase 5, this will transition to WorkflowStatus.ANALYZING.
+    # In Phase 5+, the aggregator transitions to the Analyst for deeper intelligence synthesis.
     return {
-        "execution_status": WorkflowStatus.COMPLETED,
-        "current_step": "research_completed",
+        "execution_status": WorkflowStatus.ANALYZING,
+        "current_step": "analyst",
         "assigned_agents": assigned,
         "execution_logs": [
             ExecutionLogEvent(
@@ -43,7 +42,8 @@ async def research_aggregator_node(state: AgentState) -> Dict[str, Any]:
                 event_type="transition",
                 message=(
                     f"Research phase complete: {len(sources)} unique sources verified, "
-                    f"{len(findings)} atomic findings extracted across {len(tasks)} subtasks."
+                    f"{len(findings)} atomic findings extracted across {len(tasks)} subtasks. "
+                    f"Transitioning to analysis phase."
                 ),
                 details={
                     "total_sources": len(sources),
@@ -53,3 +53,4 @@ async def research_aggregator_node(state: AgentState) -> Dict[str, Any]:
             )
         ],
     }
+

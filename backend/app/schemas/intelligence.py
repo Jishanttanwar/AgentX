@@ -57,3 +57,82 @@ class AnalyticalInsight(BaseModel):
         le=1.0,
         description="Confidence level in the validity of the synthesis",
     )
+
+
+
+class VerificationStatus(str, Enum):
+    """Rigorous factual verification statuses for empirical claims."""
+    VERIFIED = "verified"
+    PARTIALLY_SUPPORTED = "partially_supported"
+    CONFLICTING_EVIDENCE = "conflicting_evidence"
+    UNSUPPORTED = "unsupported"
+
+
+class FactualClaim(BaseModel):
+    """An atomic factual claim extracted from research findings."""
+
+    claim_id: str = Field(
+        default_factory=lambda: f"clm_{uuid.uuid4().hex[:8]}",
+        description="Unique identifier for the atomic claim",
+    )
+    claim_text: str = Field(..., description="The specific, verifiable proposition")
+    originating_task_id: str = Field(..., description="Task ID where the claim originated")
+    finding_id: Optional[str] = Field(
+        default=None,
+        description="ID of the research finding containing this claim",
+    )
+    is_statistical: bool = Field(
+        default=False,
+        description="Whether the claim includes specific numbers, dates, or quantitative metrics",
+    )
+
+
+class VerificationResult(BaseModel):
+    """
+    Detailed verification verdict for a factual claim against external source evidence.
+    """
+
+    verification_id: str = Field(
+        default_factory=lambda: f"ver_{uuid.uuid4().hex[:8]}",
+        description="Unique identifier for this verification evaluation",
+    )
+    claim_id: str = Field(..., description="ID of the evaluated claim")
+    claim_text: str = Field(..., description="Text of the evaluated claim")
+    status: VerificationStatus = Field(
+        ...,
+        description="Verdict status: VERIFIED, PARTIALLY_SUPPORTED, CONFLICTING_EVIDENCE, UNSUPPORTED",
+    )
+    verdict_rationale: str = Field(
+        ...,
+        description="Detailed logical rationale explaining why this status was assigned",
+    )
+    supporting_sources: List[str] = Field(
+        default_factory=list,
+        description="Source URLs directly corroborating the claim",
+    )
+    supporting_quotes: List[str] = Field(
+        default_factory=list,
+        description="Exact text passages from sources proving the claim",
+    )
+    contradictory_evidence: Optional[str] = Field(
+        default=None,
+        description="Opposing evidence found across sources, if any",
+    )
+    confidence_score: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=1.0,
+        description="Confidence in the verification assessment",
+    )
+    requires_additional_research: bool = Field(
+        default=False,
+        description="True if claim is crucial but lacks sufficient evidence",
+    )
+    suggested_followup_queries: List[str] = Field(
+        default_factory=list,
+        description="Search queries targeted at resolving unsupported or conflicting claims",
+    )
+    timestamp: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        description="Timestamp of verification assessment",
+    )

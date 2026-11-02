@@ -99,3 +99,79 @@ def reduce_findings_by_task(
         else:
             merged[task_id] = reduce_findings(merged[task_id], fnd_list)
     return merged
+
+
+from app.schemas.intelligence import (
+    AdditionalResearchRequest,
+    AnalyticalInsight,
+    FactualClaim,
+    VerificationResult,
+)
+
+
+def reduce_insights(
+    existing: Union[List[AnalyticalInsight], List[dict], None],
+    new: Union[List[AnalyticalInsight], List[dict], None],
+) -> List[AnalyticalInsight]:
+    """Reducer for accumulating analytical insights without duplication."""
+    combined: Dict[str, AnalyticalInsight] = {}
+
+    for item in (existing or []) + (new or []):
+        ins = item if isinstance(item, AnalyticalInsight) else AnalyticalInsight(**item)
+        combined[ins.insight_id] = ins
+
+    return list(combined.values())
+
+
+def reduce_claims(
+    existing: Union[List[FactualClaim], List[dict], None],
+    new: Union[List[FactualClaim], List[dict], None],
+) -> List[FactualClaim]:
+    """Reducer for accumulating atomic factual claims."""
+    combined: Dict[str, FactualClaim] = {}
+
+    for item in (existing or []) + (new or []):
+        clm = item if isinstance(item, FactualClaim) else FactualClaim(**item)
+        combined[clm.claim_id] = clm
+
+    return list(combined.values())
+
+
+def reduce_verification_results(
+    existing: Union[List[VerificationResult], List[dict], None],
+    new: Union[List[VerificationResult], List[dict], None],
+) -> List[VerificationResult]:
+    """
+    Reducer for accumulating and updating claim verification results.
+    Keyed by claim_id so re-verified claims update to the newest verdict.
+    """
+    by_claim: Dict[str, VerificationResult] = {}
+
+    for item in (existing or []):
+        ver = item if isinstance(item, VerificationResult) else VerificationResult(**item)
+        by_claim[ver.claim_id] = ver
+
+    for item in (new or []):
+        ver = item if isinstance(item, VerificationResult) else VerificationResult(**item)
+        # Update or add newer verification outcome
+        by_claim[ver.claim_id] = ver
+
+    return list(by_claim.values())
+
+
+def reduce_additional_requests(
+    existing: Union[List[AdditionalResearchRequest], List[dict], None],
+    new: Union[List[AdditionalResearchRequest], List[dict], None],
+) -> List[AdditionalResearchRequest]:
+    """Reducer for tracking iterative research gap requests."""
+    seen_queries = set()
+    result: List[AdditionalResearchRequest] = []
+
+    for item in (existing or []) + (new or []):
+        req = item if isinstance(item, AdditionalResearchRequest) else AdditionalResearchRequest(**item)
+        q_tuple = tuple(sorted([q.strip().lower() for q in req.queries]))
+        if q_tuple not in seen_queries:
+            seen_queries.add(q_tuple)
+            result.append(req)
+
+    return result
